@@ -28,12 +28,22 @@ namespace LatinoNetOnline.GenericRepository
                 Type entity = property.GetGenericArguments().First();
 
                 Type repositoryInterfaceType = typeof(IRepository<>).MakeGenericType(entity);
+
+                Type repositoryAsyncInterfaceType = typeof(IRepositoryAsync<>).MakeGenericType(entity);
+
+                Type repositorySyncInterfaceType = typeof(IRepositorySync<>).MakeGenericType(entity);
+
+                Type repositoryReadOnlyAsyncInterfaceType = typeof(IRepositoryReadOnlyAsync<>).MakeGenericType(entity);
+
+                Type repositoryReadOnlySyncInterfaceType = typeof(IRepositoryReadOnlySync<>).MakeGenericType(entity);
+
+                Type repositoryReadOnlyInterfaceType = typeof(IRepositoryReadOnly<>).MakeGenericType(entity);
+
+
                 Type repositoryClassType = typeof(Repository<>).MakeGenericType(entity);
 
 
-
-
-                services.AddScoped(repositoryInterfaceType, sp =>
+                Func<IServiceProvider, object> func = sp =>
                 {
                     object evaluator = sp.GetRequiredService<ISpecificationEvaluator>();
 
@@ -42,7 +52,14 @@ namespace LatinoNetOnline.GenericRepository
                     object? o = Activator.CreateInstance(repositoryClassType, new object[] { context, evaluator });
 
                     return o;
-                });
+                };
+
+                services.AddScoped(repositoryInterfaceType, func);
+                services.AddScoped(repositoryAsyncInterfaceType, func);
+                services.AddScoped(repositorySyncInterfaceType, func);
+                services.AddScoped(repositoryReadOnlyAsyncInterfaceType, func);
+                services.AddScoped(repositoryReadOnlySyncInterfaceType, func);
+                services.AddScoped(repositoryReadOnlyInterfaceType, func);
             }
 
             return services;

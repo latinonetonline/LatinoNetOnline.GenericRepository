@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace LatinoNetOnline.GenericRepository.Repositories
 {
-    public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
+    public partial class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
         protected readonly DbContext _context;
         protected readonly ISpecificationEvaluator _specificationEvaluator;
@@ -153,5 +153,6 @@ namespace LatinoNetOnline.GenericRepository.Repositories
         {
             return await Query(tracking).ToListAsync(cancellationToken);
         }
+
     }
 }
