@@ -18,7 +18,7 @@ namespace LatinoNetOnline.GenericRepository.Specifications
 
             // Includes all expression-based includes
             query = specification.Includes.Aggregate(query,
-                                    (current, include) => current.Include(include));
+                                    (current, include) => include(current));
 
             // Include any string-based include statements
             query = specification.IncludeStrings.Aggregate(query,

@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore.Query;
+
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace LatinoNetOnline.GenericRepository.Specifications
@@ -15,7 +18,9 @@ namespace LatinoNetOnline.GenericRepository.Specifications
 
         }
         public Expression<Func<T, bool>>? Criteria { get; }
-        public List<Expression<Func<T, object>>> Includes { get; } = new List<Expression<Func<T, object>>>();
+
+        public List<Func<IQueryable<T>, IIncludableQueryable<T, object>>> Includes { get; } = new List<Func<IQueryable<T>, IIncludableQueryable<T, object>>>();
+
         public List<string> IncludeStrings { get; } = new List<string>();
         public Expression<Func<T, object>>? OrderBy { get; private set; }
         public Expression<Func<T, object>>? OrderByDescending { get; private set; }
@@ -25,7 +30,7 @@ namespace LatinoNetOnline.GenericRepository.Specifications
         public int Skip { get; private set; }
         public bool IsPagingEnabled { get; private set; } = false;
 
-        protected virtual void AddInclude(Expression<Func<T, object>> includeExpression)
+        protected virtual void AddInclude(Func<IQueryable<T>, IIncludableQueryable<T, object>> includeExpression)
         {
             Includes.Add(includeExpression);
         }
