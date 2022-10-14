@@ -46,12 +46,14 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _context.SaveChangesAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
+        #region FindAsync
+
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, bool tracking, CancellationToken cancellationToken = default)
         {
             return await Query(tracking).Where(expression).ToListAsync(cancellationToken);
         }
 
-        public Task<IEnumerable<TEntity>> FindAsync(ISpecification<TEntity> specification, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<IEnumerable<TEntity>> FindAsync(ISpecification<TEntity> specification, bool tracking, CancellationToken cancellationToken = default)
         {
             return FindAsync(specification, Query(tracking), cancellationToken);
         }
@@ -61,6 +63,17 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return await _specificationEvaluator.GetQuery(query, specification).ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<TEntity>> FindAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return await Query(true).Where(expression).ToListAsync(cancellationToken);
+        }
+
+        public Task<IEnumerable<TEntity>> FindAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        {
+            return FindAsync(specification, Query(true), cancellationToken);
+        }
+
+        #endregion
 
         public IQueryable<TEntity> Query(bool tracking = true)
         {
@@ -89,12 +102,14 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _context.SaveChangesAsync(cancellationToken);
         }
 
-        public Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
+        #region FirstOrDefaultAsync
+
+        public Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, bool tracking, CancellationToken cancellationToken = default)
         {
             return Query(tracking).Where(expression).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<TEntity?> FirstOrDefaultAsync(ISpecification<TEntity> specification, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<TEntity?> FirstOrDefaultAsync(ISpecification<TEntity> specification, bool tracking, CancellationToken cancellationToken = default)
         {
             return FirstOrDefaultAsync(specification, Query(tracking), cancellationToken);
         }
@@ -104,12 +119,26 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _specificationEvaluator.GetQuery(query, specification).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<TEntity?> FirstOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return Query(true).Where(expression).FirstOrDefaultAsync(cancellationToken);
+        }
+
+        public Task<TEntity?> FirstOrDefaultAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        {
+            return FirstOrDefaultAsync(specification, Query(true), cancellationToken);
+        }
+
+        #endregion
+
+        #region SingleOrDefaultAsync
+
+        public Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression, bool tracking, CancellationToken cancellationToken = default)
         {
             return Query(tracking).Where(expression).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<TEntity?> SingleOrDefaultAsync(ISpecification<TEntity> specification, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<TEntity?> SingleOrDefaultAsync(ISpecification<TEntity> specification, bool tracking, CancellationToken cancellationToken = default)
         {
             return SingleOrDefaultAsync(specification, Query(tracking), cancellationToken);
         }
@@ -119,14 +148,28 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _specificationEvaluator.GetQuery(query, specification).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<TEntity?> SingleOrDefaultAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return Query(tracking).Where(expression).AnyAsync(cancellationToken);
+            return Query(true).Where(expression).SingleOrDefaultAsync(cancellationToken);
         }
 
-        public Task<bool> AnyAsync(ISpecification<TEntity> specification, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<TEntity?> SingleOrDefaultAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
         {
-            return AnyAsync(specification, Query(tracking), cancellationToken);
+            return SingleOrDefaultAsync(specification, Query(true), cancellationToken);
+        }
+
+        #endregion
+
+        #region AnyAsync
+
+        public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
+        {
+            return Query(false).Where(expression).AnyAsync(cancellationToken);
+        }
+
+        public Task<bool> AnyAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
+        {
+            return AnyAsync(specification, Query(false), cancellationToken);
         }
 
         public Task<bool> AnyAsync(ISpecification<TEntity> specification, IQueryable<TEntity> query, CancellationToken cancellationToken = default)
@@ -134,14 +177,17 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _specificationEvaluator.GetQuery(query, specification).AnyAsync(cancellationToken);
         }
 
-        public Task<int> CountAsync(Expression<Func<TEntity, bool>> expression, bool tracking = true, CancellationToken cancellationToken = default)
+        #endregion
+
+        #region CountAsync
+        public Task<int> CountAsync(Expression<Func<TEntity, bool>> expression, CancellationToken cancellationToken = default)
         {
-            return Query(tracking).Where(expression).CountAsync(cancellationToken);
+            return Query(false).Where(expression).CountAsync(cancellationToken);
         }
 
-        public Task<int> CountAsync(ISpecification<TEntity> specification, bool tracking = true, CancellationToken cancellationToken = default)
+        public Task<int> CountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default)
         {
-            return CountAsync(specification, Query(tracking), cancellationToken);
+            return CountAsync(specification, Query(false), cancellationToken);
         }
 
         public Task<int> CountAsync(ISpecification<TEntity> specification, IQueryable<TEntity> query, CancellationToken cancellationToken = default)
@@ -149,10 +195,19 @@ namespace LatinoNetOnline.GenericRepository.Repositories
             return _specificationEvaluator.GetQuery(query, specification).CountAsync(cancellationToken);
         }
 
-        public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking = true, CancellationToken cancellationToken = default)
+        #endregion
+
+        #region GetAllAsync
+        public async Task<IEnumerable<TEntity>> GetAllAsync(bool tracking, CancellationToken cancellationToken = default)
         {
             return await Query(tracking).ToListAsync(cancellationToken);
         }
 
+        public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+        {
+            return await Query(false).ToListAsync(cancellationToken);
+        }
+
+        #endregion
     }
 }

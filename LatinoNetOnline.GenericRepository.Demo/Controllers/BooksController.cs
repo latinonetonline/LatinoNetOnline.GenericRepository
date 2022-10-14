@@ -66,9 +66,9 @@ namespace LatinoNetOnline.GenericRepository.Demo.Controllers
 
         // DELETE api/<BooksController>/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteAsync(int id)
+        public async Task<IActionResult> DeleteAsync(int id, CancellationToken cancellationToken)
         {
-            var result = await _repository.FirstOrDefaultAsync(x => x.Id == id);
+            var result = await _repository.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
 
             if (result == null)
                 return BadRequest();
